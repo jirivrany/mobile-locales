@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+<string name="author">Autor</string>
+<string name="login_failed">Usuário ou senha incorretos.</string>
+</resources>

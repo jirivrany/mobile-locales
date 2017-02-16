@@ -1,14 +1,17 @@
 """
+Python 2.7.x script for generating local files for Android and iOS projects from Google sheet data source
 @Author - Jiri Vrany <jiri.vrany@gmail.com>
 @License - MIT
 """
-
+#dependencies
 from StringIO import StringIO  
 import requests
 import pandas as pd
 import os
 
-LANGS = ['fr', 'en', 'de', 'it', 'sk', 'cs', 'es', 'pt', 'ja']
+#config
+import config
+
 
 def create_dir_ifnotexis(mpath):
     try:
@@ -36,11 +39,10 @@ def write_android_files(df):
     android_row = '<string name="{}">{}</string>\n' 
 
 
-    for lang in LANGS:
+    for lang in config.LANGS:
         colname = "{}_value".format(lang)
         mpath = './android-output/values-{}'.format(lang)
         fpath = mpath + "/strings.xml"
-        print fpath
         create_dir_ifnotexis(mpath)
         with open(fpath, 'w+') as f:
             f.write(android_head)
@@ -55,11 +57,10 @@ def write_ios_files(df):
     create_dir_ifnotexis(ios_dir)
     ios_row = '"{}" = "{}";\n'
     #normal rows
-    for lang in LANGS:
+    for lang in config.LANGS:
         colname = "{}_value".format(lang)
         mpath = ios_dir + '/{}.lproj'.format(lang)
         fpath = mpath + "/Localizable.strings"
-        print fpath
         create_dir_ifnotexis(mpath)
         with open(fpath, 'w+') as f:
             for index, row in ios.iterrows():
@@ -69,14 +70,12 @@ def write_ios_files(df):
     colname = "en_value"
     mpath = ios_dir + '/Base.lproj'
     fpath = mpath + "/Localizable.strings"
-    print fpath
     create_dir_ifnotexis(mpath)
     with open(fpath, 'w+') as f:
         for index, row in ios.iterrows():
             f.write(ios_row.format(row['ios_key'], row[colname]))            
 
 if __name__ == '__main__':
-    MURL = 'https://docs.google.com/spreadsheets/d/14L6Xrcwvs_DiLb0H3NApgwSrHf0BGgttuBlq1YsFmBQ/edit?usp=sharing'
-    df = get_dataframe_from_google(MURL)
+    df = get_dataframe_from_google(config.DATA_URL)
     write_android_files(df)
     write_ios_files(df)
