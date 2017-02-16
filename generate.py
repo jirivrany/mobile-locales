@@ -51,7 +51,7 @@ def write_android_files(df):
 
             f.write(android_foot)    
         
-def write_ios_files(df):
+def write_ios_files(df, base_lang):
     ios = df[df['ios_key'] != 'NOT_EXISTS']
     ios_dir = './ios-output'    
     create_dir_ifnotexis(ios_dir)
@@ -67,7 +67,7 @@ def write_ios_files(df):
                 f.write(ios_row.format(row['ios_key'], row[colname]))
 
     #base project
-    colname = "en_value"
+    colname = "{}_value".format(base_lang)
     mpath = ios_dir + '/Base.lproj'
     fpath = mpath + "/Localizable.strings"
     create_dir_ifnotexis(mpath)
@@ -78,4 +78,4 @@ def write_ios_files(df):
 if __name__ == '__main__':
     df = get_dataframe_from_google(config.DATA_URL)
     write_android_files(df)
-    write_ios_files(df)
+    write_ios_files(df, config.BASE_LANG)
